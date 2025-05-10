@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug with ST-Link",
+            "cwd": "${workspaceFolder}",
+            "type": "cortex-debug",
+            "executable": "${command:cmake.launchTargetPath}",
+            "request": "launch",
+            "servertype": "stlink",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            },
+            "showDevDebugOutput": "none",
+            "preLaunchTask": "CMake: build",
+            "svdFile": "${cwd}/svd/STM32G030.svd"
+        }
+    ]
+}
