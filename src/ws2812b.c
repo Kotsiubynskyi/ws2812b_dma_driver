@@ -1,19 +1,11 @@
 #include "ws2812b.h"
 #include <stdlib.h>
 
-#define COLOR_BITS 24
-#define RESET_LEDS 12
+static uint8_t pixels_data[PIXELS_DATA_SIZE];
 
-static uint8_t *pixels_data;
-static uint16_t pixels_amount;
-
-uint8_t* ws2812b_init(uint16_t pixels)
+uint8_t *ws2812b_init()
 {
-    pixels_amount = pixels;
-    uint16_t arr_size = (pixels_amount + RESET_LEDS) * COLOR_BITS;
-    pixels_data = (uint8_t *)calloc(arr_size, sizeof(uint8_t));
-
-    for (uint16_t i = 0; i < pixels_amount; i++)
+    for (uint16_t i = 0; i < PIXELS_AMOUNT; i++)
     {
         for (uint16_t k = 0; k < COLOR_BITS; k++)
         {
@@ -26,7 +18,7 @@ uint8_t* ws2812b_init(uint16_t pixels)
 
 void ws2812b_clear_all()
 {
-    for (uint16_t i = 0; i < pixels_amount * COLOR_BITS; i++)
+    for (uint16_t i = 0; i < PIXELS_AMOUNT * COLOR_BITS; i++)
     {
         ws2812b_clear_pixel(i);
     }
@@ -34,7 +26,7 @@ void ws2812b_clear_all()
 
 void ws2812b_clear_pixel(uint16_t index)
 {
-    if (index >= pixels_amount)
+    if (index >= PIXELS_AMOUNT)
     {
         return;
     }
@@ -47,7 +39,7 @@ void ws2812b_clear_pixel(uint16_t index)
 uint32_t mask = 0xfffffe;
 void ws2812b_set_pixel(uint16_t index, uint32_t rgbColor)
 {
-    if (index >= pixels_amount)
+    if (index >= PIXELS_AMOUNT)
     {
         return;
     }
@@ -63,7 +55,7 @@ void ws2812b_set_pixel(uint16_t index, uint32_t rgbColor)
 
 void ws2812b_allOn(uint32_t rgbColor)
 {
-    for (uint16_t i = 0; i < pixels_amount; i++)
+    for (uint16_t i = 0; i < PIXELS_AMOUNT; i++)
     {
         ws2812b_set_pixel(i, rgbColor);
     }

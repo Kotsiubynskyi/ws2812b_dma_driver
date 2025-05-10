@@ -6,55 +6,40 @@
 
 void GPIO_PA6_Init();
 void SystemClock_Config();
-void startWledTimer(uint8_t *ledData,  uint16_t ledsAmount);
+void startWledTimer(uint8_t *ledData);
 
-uint8_t *arr;
+#define PIXELS
+
 int main()
 {
   HAL_Init();
   SystemClock_Config();
-
+  
   GPIO_PA6_Init();
   
-  arr = ws2812b_init(64);
-  startWledTimer(arr, (64 + RESET_LEDS) * COLOR_BITS);
+  uint8_t *arr = ws2812b_init();
+  startWledTimer(arr);
   ws2812b_clear_all();
   while (1)
   {
-      ws2812b_clear_pixel(63);
-      ws2812b_set_pixel(59, 0xff0000);
-      HAL_Delay(100);
-      ws2812b_set_pixel(63, 0x0000ff);
-      ws2812b_clear_pixel(59);
-      HAL_Delay(100);
+      // ws2812b_clear_pixel(0);
+      // HAL_Delay(600);
+      ws2812b_set_pixel(0, 0xff0000);
+      ws2812b_set_pixel(2, 0x00ff00);
+      HAL_Delay(600);
   }
 
   return 0;
 }
 
-uint8_t c = 0;
+
 void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
 {
-  if (htim->Instance == TIM3) // Check if it's the correct DMA instance
+  if (htim->Instance == TIM3)
   {
-    c++;
-    if (c % 4 > 0)
-    {
-
-      arr[0] = 3;
-      arr[1] = 3;
-      arr[8] = 1;
-      arr[9] = 1;
-    }
-    else
-    {
-      arr[0] = 1;
-      arr[1] = 1;
-      arr[8] = 3;
-      arr[9] = 3;
-    }
   }
 }
+
 
 void GPIO_PA6_Init()
 {
@@ -69,7 +54,7 @@ void GPIO_PA6_Init()
 
 TIM_HandleTypeDef hTim3;
 
-void startWledTimer(uint8_t *ledData,  uint16_t ledsAmount)
+void startWledTimer(uint8_t *ledData)
 {
   __HAL_RCC_TIM3_CLK_ENABLE();
 
@@ -86,7 +71,7 @@ void startWledTimer(uint8_t *ledData,  uint16_t ledsAmount)
 
   HAL_TIM_PWM_ConfigChannel(&hTim3, &sConfigOC, TIM_CHANNEL_1);
 
-  HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, (uint32_t *)ledData, ledsAmount);
+  HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, (uint32_t *)ledData, PIXELS_DATA_SIZE);
 }
 
 DMA_HandleTypeDef hdma_tim3_ch1;

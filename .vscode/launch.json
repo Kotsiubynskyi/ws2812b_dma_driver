@@ -5,7 +5,7 @@
             "name": "Debug with ST-Link",
             "cwd": "${workspaceFolder}",
             "type": "cortex-debug",
-            "executable": "${command:cmake.launchTargetPath}",
+            "executable": "build/wled",
             "request": "launch",
             "servertype": "stlink",
             "liveWatch": {
