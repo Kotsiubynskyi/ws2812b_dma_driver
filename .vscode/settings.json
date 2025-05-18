@@ -8,7 +8,9 @@
         "stm32g0xx_hal_conf.h": "c",
         "stm32g0xx_hal_gpio.h": "c",
         "stm32g030xx.h": "c",
-        "system_stm32g0xx.h": "c"
+        "system_stm32g0xx.h": "c",
+        "stdlib.h": "c",
+        "stm32g0xx_hal_rcc.h": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": true
+    "cortex-debug.variableUseNaturalFormat": false
 }

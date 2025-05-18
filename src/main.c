@@ -14,32 +14,54 @@ int main()
 {
   HAL_Init();
   SystemClock_Config();
+
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  // GPIO_InitStruct.Alternate = GPIO_AF1_TIM3;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  
   
   GPIO_PA6_Init();
   
   uint8_t *arr = ws2812b_init();
   startWledTimer(arr);
   ws2812b_clear_all();
+  ws2812b_set_pixel(0, 0xff0000);
   while (1)
   {
-      // ws2812b_clear_pixel(0);
-      // HAL_Delay(600);
-      ws2812b_set_pixel(0, 0xff0000);
-      ws2812b_set_pixel(2, 0x00ff00);
+      ws2812b_set_pixel(1, 0x00ff00);
+      ws2812b_set_pixel(2, 0x0000ff);
       HAL_Delay(600);
+      // ws2812b_set_pixel(1, 0x0000ff);
+      // ws2812b_set_pixel(2, 0x00ff00);
+      // HAL_Delay(600);
+      // ws2812b_allOn(0xf000ff);
+      // HAL_Delay(600);
+      // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+    }
+    
+    return 0;
   }
-
-  return 0;
-}
-
-
-void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
-{
-  if (htim->Instance == TIM3)
+  
+  void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
   {
+    if (htim->Instance == TIM3)
+    {
+      ws2812b_dma_half_callback();
+      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
+    }
+  }
+  
+  void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+  {
+    if (htim->Instance == TIM3)
+    {
+      ws2812b_dma_complete_callback();
+      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
   }
 }
-
 
 void GPIO_PA6_Init()
 {
@@ -71,7 +93,7 @@ void startWledTimer(uint8_t *ledData)
 
   HAL_TIM_PWM_ConfigChannel(&hTim3, &sConfigOC, TIM_CHANNEL_1);
 
-  HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, (uint32_t *)ledData, PIXELS_DATA_SIZE);
+  HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, (uint32_t *)ledData, 2*COLOR_BITS);
 }
 
 DMA_HandleTypeDef hdma_tim3_ch1;
@@ -90,7 +112,6 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
     hdma_tim3_ch1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
     hdma_tim3_ch1.Init.MemDataAlignment = DMA_PDATAALIGN_BYTE;
     hdma_tim3_ch1.Init.Mode = DMA_CIRCULAR;
-    // hdma_tim3_ch1.XferHalfCpltCallback = HAL_DMA_XferHalfCpltCallback;
 
     HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
     HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);

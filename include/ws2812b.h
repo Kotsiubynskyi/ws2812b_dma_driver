@@ -33,6 +33,8 @@ void ws2812b_clear_pixel(uint16_t index);
 void ws2812b_set_pixel(uint16_t index, uint32_t rgbColor);
 void ws2812b_allOn(uint32_t rgbColor);
 void ws2812b_cleanup(void);
+void ws2812b_dma_complete_callback(void);
+void ws2812b_dma_half_callback(void);
 uint32_t convertRgbToGrb(uint32_t rgb);
 
 #ifdef __cplusplus
