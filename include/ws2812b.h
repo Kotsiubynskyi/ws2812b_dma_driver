@@ -8,8 +8,8 @@ extern "C" {
 #include <stdint.h>
 
 #ifndef PIXELS_AMOUNT
-#define PIXELS_AMOUNT 3
-#endif // COLOR_BITS
+#define PIXELS_AMOUNT 64
+#endif // PIXELS_AMOUNT
 
 #ifndef RESET_LEDS
 #define RESET_LEDS 12
@@ -20,12 +20,6 @@ extern "C" {
 #endif // COLOR_BITS
 
 #define PIXELS_DATA_SIZE (PIXELS_AMOUNT + RESET_LEDS) * COLOR_BITS
-
-
-typedef struct {
-    uint16_t numLeds;
-    uint8_t dataPin;
-} ws2812b_config_t;
 
 uint8_t* ws2812b_init();
 void ws2812b_clear_all(void);

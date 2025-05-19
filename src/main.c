@@ -8,38 +8,27 @@ void GPIO_PA6_Init();
 void SystemClock_Config();
 void startWledTimer(uint8_t *ledData);
 
-#define PIXELS
-
 int main()
 {
   HAL_Init();
   SystemClock_Config();
 
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  // GPIO_InitStruct.Alternate = GPIO_AF1_TIM3;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  
-  
   GPIO_PA6_Init();
   
-  uint8_t *arr = ws2812b_init();
-  startWledTimer(arr);
+  uint8_t *dma_array = ws2812b_init();
+  startWledTimer(dma_array);
   ws2812b_clear_all();
-  ws2812b_set_pixel(0, 0xff0000);
+  ws2812b_set_pixel(0, 0x110000);
   while (1)
   {
-      ws2812b_set_pixel(1, 0x00ff00);
-      ws2812b_set_pixel(2, 0x0000ff);
+      ws2812b_set_pixel(1, 0x001100);
+      ws2812b_set_pixel(2, 0x110000);
+      ws2812b_set_pixel(3, 0x001100);
+      ws2812b_set_pixel(4, 0x110000);
+      ws2812b_set_pixel(5, 0x001100);
       HAL_Delay(600);
-      // ws2812b_set_pixel(1, 0x0000ff);
-      // ws2812b_set_pixel(2, 0x00ff00);
-      // HAL_Delay(600);
-      // ws2812b_allOn(0xf000ff);
-      // HAL_Delay(600);
-      // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+      ws2812b_allOn(0x100011);
+      HAL_Delay(600);
     }
     
     return 0;
@@ -50,7 +39,6 @@ int main()
     if (htim->Instance == TIM3)
     {
       ws2812b_dma_half_callback();
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
     }
   }
   
@@ -59,7 +47,6 @@ int main()
     if (htim->Instance == TIM3)
     {
       ws2812b_dma_complete_callback();
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
   }
 }
 
