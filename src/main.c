@@ -3,10 +3,11 @@
 #include "stm32g0xx_hal_rcc.h"
 #include "stm32g0xx_hal_dma.h"
 #include "ws2812b.h"
+#include "ws2812b_animations.h"
 
 void GPIO_PA6_Init();
 void SystemClock_Config();
-void startWledTimer(uint8_t *ledData);
+void startWledTimer(uint32_t *ledData);
 
 int main()
 {
@@ -14,39 +15,39 @@ int main()
   SystemClock_Config();
 
   GPIO_PA6_Init();
-  
-  uint8_t *dma_array = ws2812b_init();
+
+  uint32_t *dma_array = ws2812b_init();
   startWledTimer(dma_array);
   ws2812b_clear_all();
-  ws2812b_set_pixel(0, 0x110000);
+  ws2812b_set_pixel(0, 0x440000);
   while (1)
   {
-      ws2812b_set_pixel(1, 0x001100);
-      ws2812b_set_pixel(2, 0x110000);
-      ws2812b_set_pixel(3, 0x001100);
-      ws2812b_set_pixel(4, 0x110000);
-      ws2812b_set_pixel(5, 0x001100);
-      HAL_Delay(600);
-      ws2812b_allOn(0x100011);
-      HAL_Delay(600);
-    }
-    
-    return 0;
+    ws2812b_set_pixel(1, 0x004400);
+    ws2812b_set_pixel(2, 0x440000);
+    ws2812b_set_pixel(3, 0x004400);
+    ws2812b_set_pixel(4, 0x440000);
+    ws2812b_set_pixel(5, 0x004400);
+    HAL_Delay(600);
+    ws2812b_allOn(0x0a000a);
+    HAL_Delay(600);
   }
-  
-  void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
+
+  return 0;
+}
+
+void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM3)
   {
-    if (htim->Instance == TIM3)
-    {
-      ws2812b_dma_half_callback();
-    }
+    ws2812b_dma_half_callback();
   }
-  
-  void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+}
+
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM3)
   {
-    if (htim->Instance == TIM3)
-    {
-      ws2812b_dma_complete_callback();
+    ws2812b_dma_complete_callback();
   }
 }
 
@@ -62,8 +63,7 @@ void GPIO_PA6_Init()
 }
 
 TIM_HandleTypeDef hTim3;
-
-void startWledTimer(uint8_t *ledData)
+void startWledTimer(uint32_t *ledData)
 {
   __HAL_RCC_TIM3_CLK_ENABLE();
 
@@ -80,7 +80,7 @@ void startWledTimer(uint8_t *ledData)
 
   HAL_TIM_PWM_ConfigChannel(&hTim3, &sConfigOC, TIM_CHANNEL_1);
 
-  HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, (uint32_t *)ledData, 2*COLOR_BITS);
+  HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, ledData, 2 * COLOR_BITS);
 }
 
 DMA_HandleTypeDef hdma_tim3_ch1;
@@ -108,6 +108,11 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
   }
 }
 
+void DMA1_Channel1_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_tim3_ch1);
+}
+
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -131,9 +136,4 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
-}
-
-void DMA1_Channel1_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(&hdma_tim3_ch1);
 }

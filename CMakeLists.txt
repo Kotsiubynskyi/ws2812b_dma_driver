@@ -8,7 +8,7 @@ project(wled LANGUAGES C CXX ASM)
 # Source files
 add_executable(${PROJECT_NAME}
   src/main.c
-  src/ws2812b.c
+  src/lib/ws2812b.c
   src/stm32g0xx_it.c
   src/sysmem.c
   src/system_stm32g0xx.c
@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
 
 # Directories with headers
 target_include_directories(${PROJECT_NAME} PRIVATE
+  src/lib
   include
   include/hal
   include/hal/Legacy

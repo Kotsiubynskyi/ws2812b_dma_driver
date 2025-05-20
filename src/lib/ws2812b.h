@@ -21,7 +21,7 @@ extern "C" {
 
 #define PIXELS_DATA_SIZE (PIXELS_AMOUNT + RESET_LEDS) * COLOR_BITS
 
-uint8_t* ws2812b_init();
+uint32_t* ws2812b_init();
 void ws2812b_clear_all(void);
 void ws2812b_clear_pixel(uint16_t index);
 void ws2812b_set_pixel(uint16_t index, uint32_t rgbColor);

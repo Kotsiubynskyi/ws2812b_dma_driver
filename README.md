@@ -1,5 +1,21 @@
-The repository demonstrates working with WS2812B addressable RGB LED with STM32 Timer + DMA.
-***STM32G0F6P6*** was used in current example.
+This is just another STM32 HAL driver library for controling __WS2812B__ RGB LED.
+Library features:
+* low memory usage
+* static memory allocation
+* using DMA+Timer for protocol controling
+* based on STM32 HAL for portability
+
+Requirements:
+Developer has to start Timer on 1 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns array which hast be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. 
+
+Tested on ***STM32G030*** and ***STM32WB55***.
+
+Project structure:
+* Demo for STM32G030 - **src/main.c**
+* Library itself:
+* * Core - **src/lib/ws2812b.c**
+* * Basic animations - **src/lib/ws2812b_animations.c**
+
 
 ## How to build and flash (for Ubuntu)
 
@@ -9,11 +25,11 @@ The repository demonstrates working with WS2812B addressable RGB LED with STM32 
     ```
 1. Clone the project:
     ```bash
-    git clone https://github.com/Kotsiubynskyi/stm32g0_ws2812b.git
+    git clone https://github.com/Kotsiubynskyi/ws2812b_dma_driver.git
     ```
 1. Generate build files:
     ```bash
-    cd stm32g0_ws2812b
+    cd ws2812b_dma_driver
     mkdir build
     cd build
     cmake .. -G Ninja
@@ -24,7 +40,7 @@ The repository demonstrates working with WS2812B addressable RGB LED with STM32 
     ```
 1. Insert ST-LINK programmer USB stick and make sure it's visible by OS:
     ```bash
-    lsusb|grep STMicroelectronics
+	lsusb|grep STMicroelectronics
     ```
 1. Upload built firmware to MCU:
     ```bash

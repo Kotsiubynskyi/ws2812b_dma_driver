@@ -1,17 +1,16 @@
 #include "ws2812b.h"
-#include <stdlib.h>
 
 static uint32_t pixels_data[PIXELS_AMOUNT];
 static uint8_t pixels_dma_data[2 * COLOR_BITS];
 
-uint8_t *ws2812b_init()
+uint32_t *ws2812b_init()
 {
     for (uint16_t i = 0; i < 2 * COLOR_BITS; i++)
     {
         pixels_dma_data[i] = 1;
     }
 
-    return pixels_dma_data;
+    return (uint32_t *) pixels_dma_data;
 }
 
 void ws2812b_clear_all()
@@ -43,7 +42,7 @@ void ws2812b_set_pixel(uint16_t index, uint32_t rgbColor)
     pixels_data[index] = grb;
 }
 
-uint32_t mask = 0xfffffe;
+const uint32_t mask = 0xfffffe;
 uint32_t counter = 0;
 void ws2812b_dma_complete_callback()
 {
@@ -51,44 +50,45 @@ void ws2812b_dma_complete_callback()
     {
         for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
         {
-            uint32_t ind = 1 * COLOR_BITS + bit;
+            uint32_t ind = COLOR_BITS + bit;
             pixels_dma_data[ind] = 0;
         }
         if (counter > (RESET_LEDS + PIXELS_AMOUNT))
         {
             counter = 0;
         }
-        return;
     }
-
-    uint32_t grb = pixels_data[(counter - 1)];
-    for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
+    else
     {
-        uint8_t bitOn = (grb >> (COLOR_BITS - 1 - bit) & ~(mask));
-        uint32_t ind = 1 * COLOR_BITS + bit;
-        pixels_dma_data[ind] = (bitOn == 1) ? 3 : 1;
+        uint32_t grb = pixels_data[(counter - 1)];
+        for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
+        {
+            uint8_t bitOn = (grb >> (COLOR_BITS - 1 - bit) & ~(mask));
+            uint32_t ind = COLOR_BITS + bit;
+            pixels_dma_data[ind] = (bitOn == 1) ? 3 : 1;
+        }
     }
 }
 
 void ws2812b_dma_half_callback()
 {
-    if (counter++ >= PIXELS_AMOUNT)
+    if (counter > PIXELS_AMOUNT-1)
     {
         for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
         {
-            uint32_t ind = 0 * COLOR_BITS + bit;
-            pixels_dma_data[ind] = 0;
+            pixels_dma_data[bit] = 0;
         }
-        return;
     }
-
-    uint32_t grb = pixels_data[(counter - 1)];
-    for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
+    else
     {
-        uint8_t bitOn = (grb >> (COLOR_BITS - 1 - bit) & ~(mask));
-        uint32_t ind = 0 * COLOR_BITS + bit;
-        pixels_dma_data[ind] = (bitOn == 1) ? 3 : 1;
+        uint32_t grb = pixels_data[(counter)];
+        for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
+        {
+            uint8_t bitOn = (grb >> (COLOR_BITS - 1-bit) & ~(mask));
+            pixels_dma_data[bit] = (bitOn == 1) ? 3 : 1;
+        }
     }
+    counter++;
 }
 
 void ws2812b_allOn(uint32_t rgbColor)
