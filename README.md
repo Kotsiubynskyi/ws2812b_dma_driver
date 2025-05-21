@@ -6,7 +6,7 @@ Library features:
 * based on STM32 HAL for portability
 
 Requirements:
-Developer has to start Timer on 1 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns array which hast be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. 
+Developer has to start Timer on 4 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns array which hasch hast be passed then be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. 
 
 Tested on ***STM32G030*** and ***STM32WB55***.
 

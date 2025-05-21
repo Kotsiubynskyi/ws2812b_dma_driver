@@ -35,6 +35,7 @@ int main()
   return 0;
 }
 
+// Half Transfer Complete callback
 void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM3)
@@ -43,6 +44,7 @@ void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
   }
 }
 
+// Full Transfer Complete callback
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM3)
@@ -51,6 +53,7 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
   }
 }
 
+//Init WS2812B data pin in ALternate Function mode with Timer 3
 void GPIO_PA6_Init()
 {
   __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -62,6 +65,7 @@ void GPIO_PA6_Init()
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
+// Start timer on 4MHz in PWM+DMA mode
 TIM_HandleTypeDef hTim3;
 void startWledTimer(uint32_t *ledData)
 {
@@ -83,8 +87,8 @@ void startWledTimer(uint32_t *ledData)
   HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, ledData, 2 * COLOR_BITS);
 }
 
+// Configure and Init DMA; also setup DMA interrupts: half and full transfer compelte events
 DMA_HandleTypeDef hdma_tim3_ch1;
-
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
 {
   if (htim_base->Instance == TIM3)
@@ -113,6 +117,7 @@ void DMA1_Channel1_IRQHandler(void)
   HAL_DMA_IRQHandler(&hdma_tim3_ch1);
 }
 
+//Start STM32G030 at 48MHz
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
