@@ -1,20 +1,20 @@
-This is just another STM32 HAL driver library for controling __WS2812B__ RGB LED.
+This is just another STM32 HAL driver library for controlling __WS2812B__ RGB LED.
 Library features:
 * low memory usage
 * static memory allocation
-* using DMA+Timer for protocol controling
+* using DMA+Timer for protocol controlling
 * based on STM32 HAL for portability
 
-Requirements:
-Developer has to start Timer on 4 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns array which hasch hast be passed then be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. 
+How to use:
+Developer has to start Timer on 4 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns array which has be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. 
 
 Tested on ***STM32G030*** and ***STM32WB55***.
 
 Project structure:
 * Demo for STM32G030 - **src/main.c**
 * Library itself:
-* * Core - **src/lib/ws2812b.c**
-* * Basic animations - **src/lib/ws2812b_animations.c**
+ * Core - **src/lib/ws2812b.c**
+ * Basic animations - **src/lib/ws2812b_animations.c**
 
 
 ## How to build and flash (for Ubuntu)
