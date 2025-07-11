@@ -13,8 +13,8 @@ Tested on ***STM32G030*** and ***STM32WB55***.
 Project structure:
 * Demo for STM32G030 - **src/main.c**
 * Library itself:
- * Core - **src/lib/ws2812b.c**
- * Basic animations - **src/lib/ws2812b_animations.c**
+  * Core - **src/lib/ws2812b.c**
+  * Basic animations - **src/lib/ws2812b_animations.c**
 
 
 ## How to build and flash (for Ubuntu)
