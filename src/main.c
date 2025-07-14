@@ -21,10 +21,12 @@ int main()
   ws2812b_clear_all();
   while (1)
   {
-    ws2812b_allOn(0xff0000);
-    HAL_Delay(1000);
-    ws2812b_clear_all();
-    HAL_Delay(1000);
+    rainbow();
+    // ws2812b_set_pixel(127, 0x0f0000);
+    // ws2812b_allOn(0x010000);
+    // HAL_Delay(500);
+    // ws2812b_clear_all();
+    // HAL_Delay(500);
   }
 
   return 0;
@@ -48,7 +50,7 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
   }
 }
 
-//Init WS2812B data pin in ALternate Function mode with Timer 3
+//Init WS2812B data pin in Alternate Function mode with Timer 3
 void GPIO_PA6_Init()
 {
   __HAL_RCC_GPIOA_CLK_ENABLE();

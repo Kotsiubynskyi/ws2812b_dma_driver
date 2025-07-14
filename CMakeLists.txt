@@ -9,6 +9,7 @@ project(wled LANGUAGES C CXX ASM)
 add_executable(${PROJECT_NAME}
   src/main.c
   src/lib/ws2812b.c
+  src/lib/ws2812b_animations.c
   src/stm32g0xx_it.c
   src/sysmem.c
   src/system_stm32g0xx.c
@@ -36,7 +37,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -mcpu=cortex-m0
   -mthumb
   -g
-  # -O1
+  -O1
   -ffunction-sections # Place functions in separate sections
   -fdata-sections # Place data in separate sections
   -fno-exceptions # Disable exceptions for bare-metal code
