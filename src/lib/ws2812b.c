@@ -48,7 +48,7 @@ const uint32_t mask = 0xfffffe;
 static uint32_t counter = 0;
 void ws2812b_dma_complete_callback()
 {
-    if (counter > PIXELS_AMOUNT - 1)
+    if (counter++ >= PIXELS_AMOUNT)
     {
         for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
         {
@@ -62,7 +62,7 @@ void ws2812b_dma_complete_callback()
     }
     else
     {
-        uint32_t grb = pixels_data[(counter)];
+        uint32_t grb = pixels_data[(counter - 1)];
         for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
         {
             uint8_t bitOn = (grb >> (COLOR_BITS - 1 - bit) & ~(mask));
@@ -70,12 +70,11 @@ void ws2812b_dma_complete_callback()
             pixels_dma_data[ind] = (bitOn == 1) ? 3 : 1;
         }
     }
-    counter++;
 }
 
 void ws2812b_dma_half_callback()
 {
-    if (counter > PIXELS_AMOUNT - 1)
+    if (counter++ >= PIXELS_AMOUNT)
     {
         for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
         {
@@ -84,14 +83,13 @@ void ws2812b_dma_half_callback()
     }
     else
     {
-        uint32_t grb = pixels_data[(counter)];
+        uint32_t grb = pixels_data[(counter-1)];
         for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
         {
             uint8_t bitOn = (grb >> (COLOR_BITS - 1 - bit) & ~(mask));
             pixels_dma_data[bit] = (bitOn == 1) ? 3 : 1;
         }
     }
-    counter++;
 }
 
 void ws2812b_allOn(uint32_t rgbColor)

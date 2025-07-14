@@ -19,17 +19,12 @@ int main()
   uint32_t *dma_array = ws2812b_init();
   startWledTimer(dma_array);
   ws2812b_clear_all();
-  ws2812b_set_pixel(0, 0x440000);
   while (1)
   {
-    ws2812b_set_pixel(1, 0x004400);
-    ws2812b_set_pixel(2, 0x440000);
-    ws2812b_set_pixel(3, 0x004400);
-    ws2812b_set_pixel(4, 0x440000);
-    ws2812b_set_pixel(5, 0x004400);
-    HAL_Delay(600);
-    ws2812b_allOn(0x0a000a);
-    HAL_Delay(600);
+    ws2812b_allOn(0xff0000);
+    HAL_Delay(1000);
+    ws2812b_clear_all();
+    HAL_Delay(1000);
   }
 
   return 0;
@@ -73,7 +68,7 @@ void startWledTimer(uint32_t *ledData)
 
   hTim3.Instance = TIM3;
   hTim3.Init.Prescaler = 16 - 1;
-  hTim3.Init.Period = 4 - 1;
+  hTim3.Init.Period = 5 - 1;
   hTim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   hTim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   HAL_TIM_Base_Init(&hTim3);
@@ -87,7 +82,7 @@ void startWledTimer(uint32_t *ledData)
   HAL_TIM_PWM_Start_DMA(&hTim3, TIM_CHANNEL_1, ledData, 2 * COLOR_BITS);
 }
 
-// Configure and Init DMA; also setup DMA interrupts: half and full transfer compelte events
+// Configure and Init DMA; also setup DMA interrupts: half and full transfer complete events
 DMA_HandleTypeDef hdma_tim3_ch1;
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
 {
@@ -117,7 +112,7 @@ void DMA1_Channel1_IRQHandler(void)
   HAL_DMA_IRQHandler(&hdma_tim3_ch1);
 }
 
-//Start STM32G030 at 48MHz
+//Start STM32G030 and APB (timers) at 64MHz
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -127,8 +122,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
-  RCC_OscInitStruct.PLL.PLLN = 8;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV2;
+  RCC_OscInitStruct.PLL.PLLN = 16;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);

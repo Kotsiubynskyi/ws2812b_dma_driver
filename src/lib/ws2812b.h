@@ -8,7 +8,7 @@ extern "C" {
 #include <stdint.h>
 
 #ifndef PIXELS_AMOUNT
-#define PIXELS_AMOUNT 64
+#define PIXELS_AMOUNT 128
 #endif // PIXELS_AMOUNT
 
 #ifndef RESET_LEDS
