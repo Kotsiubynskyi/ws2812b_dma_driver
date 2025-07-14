@@ -2,6 +2,7 @@
 #include "stm32g0xx_hal_tim.h"
 #include "stm32g0xx_hal_rcc.h"
 #include "stm32g0xx_hal_dma.h"
+
 #include "ws2812b.h"
 #include "ws2812b_animations.h"
 
@@ -21,12 +22,12 @@ int main()
   ws2812b_clear_all();
   while (1)
   {
-    rainbow();
-    // ws2812b_set_pixel(127, 0x0f0000);
-    // ws2812b_allOn(0x010000);
-    // HAL_Delay(500);
-    // ws2812b_clear_all();
-    // HAL_Delay(500);
+    // rainbow();
+    ws2812b_allOn(0x010000);
+    ws2812b_set_pixel(127, 0xff0000);
+    HAL_Delay(500);
+    ws2812b_clear_all();
+    HAL_Delay(500);
   }
 
   return 0;
