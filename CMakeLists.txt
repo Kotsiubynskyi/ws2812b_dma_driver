@@ -36,7 +36,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -mcpu=cortex-m0
   -mthumb
   -g
-  -O1
+  # -O1
   -ffunction-sections # Place functions in separate sections
   -fdata-sections # Place data in separate sections
   -fno-exceptions # Disable exceptions for bare-metal code
