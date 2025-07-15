@@ -6,6 +6,8 @@
 #include "ws2812b.h"
 #include "ws2812b_animations.h"
 
+#define PIXELS_AMOUNT 128
+
 void GPIO_PA6_Init();
 void SystemClock_Config();
 void startWledTimer(uint32_t *ledData);
@@ -17,17 +19,17 @@ int main()
 
   GPIO_PA6_Init();
 
-  uint32_t *dma_array = ws2812b_init();
+  uint32_t *dma_array = ws2812b_init(HAL_Delay);
   startWledTimer(dma_array);
-  ws2812b_clear_all();
+  ws2812b_allOff();
   while (1)
   {
-    // rainbow();
     ws2812b_allOn(0x010000);
     ws2812b_set_pixel(127, 0xff0000);
-    HAL_Delay(500);
-    ws2812b_clear_all();
-    HAL_Delay(500);
+    HAL_Delay(1000);
+    ws2812b_allOff();
+    HAL_Delay(1000);
+    rainbow();
   }
 
   return 0;

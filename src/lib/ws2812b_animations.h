@@ -14,7 +14,7 @@ extern "C"
     void rainbow();
 
     /**
-     * Single color glowing - small fade in and out
+     * Single color glowing - fade in and out
      */
     void glowing(uint32_t rgbColor);
 

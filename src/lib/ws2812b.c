@@ -4,9 +4,11 @@
 
 static uint32_t pixels_data[PIXELS_AMOUNT];
 static uint8_t pixels_dma_data[2 * COLOR_BITS];
+static void (*waitMs)(uint32_t ms);
 
-uint32_t *ws2812b_init()
+uint32_t *ws2812b_init(void (*wait)(uint32_t ms))
 {
+    waitMs = wait;
     for (uint16_t i = 0; i < 2 * COLOR_BITS; i++)
     {
         pixels_dma_data[i] = 1;
@@ -15,7 +17,7 @@ uint32_t *ws2812b_init()
     return (uint32_t *)pixels_dma_data;
 }
 
-void ws2812b_clear_all()
+void ws2812b_allOff()
 {
     for (uint16_t i = 0; i < PIXELS_AMOUNT; i++)
     {
@@ -23,14 +25,22 @@ void ws2812b_clear_all()
     }
 }
 
+void delay(uint32_t ms)
+{
+    waitMs(ms);
+}
+
 void ws2812b_clear_pixel(uint16_t index)
 {
-    if (index >= PIXELS_AMOUNT)
-    {
-        return;
-    }
+    ws2812b_set_pixel(index, 0);
+}
 
-    pixels_data[index] = 0;
+static uint32_t convertRgbToGrb(uint32_t rgb)
+{
+    uint8_t green = (rgb >> 8) & 0xFF;
+    uint8_t red = (rgb >> 16) & 0xFF;
+
+    return (rgb & CLEAR_RG_MASK) | (red << 8) | (green << 16);
 }
 
 void ws2812b_set_pixel(uint16_t index, uint32_t rgbColor)
@@ -83,7 +93,7 @@ void ws2812b_dma_half_callback()
     }
     else
     {
-        uint32_t grb = pixels_data[(counter-1)];
+        uint32_t grb = pixels_data[(counter - 1)];
         for (uint16_t bit = 0; bit < COLOR_BITS; bit++)
         {
             uint8_t bitOn = (grb >> (COLOR_BITS - 1 - bit) & ~(mask));
@@ -98,12 +108,4 @@ void ws2812b_allOn(uint32_t rgbColor)
     {
         ws2812b_set_pixel(i, rgbColor);
     }
-}
-
-uint32_t convertRgbToGrb(uint32_t rgb)
-{
-    uint8_t green = (rgb >> 8) & 0xFF;
-    uint8_t red = (rgb >> 16) & 0xFF;
-
-    return (rgb & CLEAR_RG_MASK) | (red << 8) | (green << 16);
 }

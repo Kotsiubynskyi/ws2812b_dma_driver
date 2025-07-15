@@ -1,4 +1,3 @@
-#include "stm32g0xx_hal.h"
 #include "ws2812b.h"
 #include "ws2812b_animations.h"
 
@@ -33,6 +32,7 @@ static uint32_t wheel(uint8_t pos)
 
 void rainbow(void)
 {
+
     uint8_t position = 0;
     while (1)
     {
@@ -41,7 +41,7 @@ void rainbow(void)
             uint8_t color_index = ((pixel * 256 / PIXELS_AMOUNT) + position) & 255;
             ws2812b_set_pixel(pixel, wheel(color_index));
         }
-        HAL_Delay(15);
+        delay(15);
         position = (position + 1) & 255;
     }
 }
