@@ -6,9 +6,7 @@ Library features:
 * based on STM32 HAL for portability
 
 How to use:
-Developer has to start Timer on 4 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns an array which has be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. 
-
-Tested on ***STM32G030*** and ***STM32WB55***.
+Developer has to start Timer on 4 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns an array which has be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. See demo in **src/main.c**
 
 Project structure:
 * Demo for STM32G030 - **src/main.c**
@@ -16,6 +14,7 @@ Project structure:
   * Core - **src/lib/ws2812b.c**
   * Basic animations - **src/lib/ws2812b_animations.c**
 
+Tested on ***STM32G030*** and ***STM32WB55***.
 
 ## How to build and flash (for Ubuntu)
 
