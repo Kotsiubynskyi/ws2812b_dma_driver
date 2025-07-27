@@ -6,8 +6,6 @@
 #include "ws2812b.h"
 #include "ws2812b_animations.h"
 
-#define PIXELS_AMOUNT 128
-
 void GPIO_PA6_Init();
 void SystemClock_Config();
 void startWledTimer(uint32_t *ledData);
@@ -24,11 +22,14 @@ int main()
   ws2812b_allOff();
   while (1)
   {
-    ws2812b_allOn(0x010000);
-    ws2812b_set_pixel(127, 0xff0000);
-    HAL_Delay(1000);
-    ws2812b_allOff();
-    HAL_Delay(1000);
+    // ws2812b_allOn(0x010000);
+    // HAL_Delay(3000);
+    // ws2812b_set_pixel(0, 0xff00ff);
+    // HAL_Delay(3000);
+    // ws2812b_allOff();
+
+    // comet(5, 0xff010f, 5);
+    // glowing(0x00000f, 8);
     rainbow();
   }
 
@@ -53,7 +54,13 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
   }
 }
 
-//Init WS2812B data pin in Alternate Function mode with Timer 3
+DMA_HandleTypeDef hdma_tim3_ch1;
+void DMA1_Channel1_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_tim3_ch1);
+}
+
+// Init WS2812B data pin in Alternate Function mode with Timer 3
 void GPIO_PA6_Init()
 {
   __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -88,7 +95,6 @@ void startWledTimer(uint32_t *ledData)
 }
 
 // Configure and Init DMA; also setup DMA interrupts: half and full transfer complete events
-DMA_HandleTypeDef hdma_tim3_ch1;
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
 {
   if (htim_base->Instance == TIM3)
@@ -112,12 +118,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
   }
 }
 
-void DMA1_Channel1_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(&hdma_tim3_ch1);
-}
-
-//Start STM32G030 and APB (timers) at 64MHz
+// Start STM32G030 and APB (timers) at 64MHz
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
