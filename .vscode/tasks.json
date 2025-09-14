@@ -8,5 +8,32 @@
             "problemMatcher": [],
             "detail": "CMake template clean task"
         },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "cmake --build build",
+            "group": "build",
+            "detail": "Builds the firmware using CMake."
+        },
+        {
+            "label": "Upload",
+            "type": "shell",
+            "command": "st-flash --reset write build/wled.bin 0x08000000",
+            "group": "none",
+            "dependsOn": "Build",
+            "detail": "Flashes the firmware using the st-flash tool, then resets the device."
+        },
+        {
+            "label": "Build and Upload",
+            "dependsOn": [
+                "Build",
+                "Upload"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Sequentially builds the project and then flashes it to the target."
+        }
     ]
 }
