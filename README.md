@@ -4,7 +4,7 @@ Library features:
 * low memory usage
 * static memory allocation
 * using DMA+Timer for driving LEDs without MCU core
-* based on STM32 HAL for portability
+* doesn't rely on any vendor HAL for portability
 
 How to use:
 Developer has to start Timer on 4 MHz speed by himself as well as DMA. Call **ws2812b_init** which returns an array which has be passed then to **HAL_TIM_PWM_Start_DMA**. That's all for start using library. See demo in **src/main.c**
